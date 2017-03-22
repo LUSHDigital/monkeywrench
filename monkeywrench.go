@@ -109,6 +109,36 @@ func (m *MonkeyWrench) InsertOrUpdateMulti(table string, cols []string, sourceDa
 	return m.applyGenericMutations(table, cols, sourceData, spanner.InsertOrUpdate)
 }
 
+// Update - Update a row in a table.
+//
+// The supplied must match the names of the columns.
+//
+// Params:
+//     table string - The name of the table to update.
+//     cols []string - The columns to update.
+//     vals interface{} - The data to update.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) Update(table string, cols []string, vals []interface{}) error {
+	return m.applyGenericMutations(table, cols, [][]interface{}{vals}, spanner.Update)
+}
+
+// UpdateMulti - Update multiple rows in a table.
+//
+// The slice of values supplied must match the names of the columns.
+//
+// Params:
+//     table string - The name of the table to update
+//     cols []string - The columns to update.
+//     sourceData [][]interface{} - A slice of data to update.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) UpdateMulti(table string, cols []string, sourceData [][]interface{}) error {
+	return m.applyGenericMutations(table, cols, sourceData, spanner.Update)
+}
+
 // InsertMap - Insert a row, based on a map, into a table.
 //
 // Params:
@@ -163,6 +193,32 @@ func (m *MonkeyWrench) InsertOrUpdateMapMulti(table string, sourceData []map[str
 	return m.applyMapMutations(table, sourceData, spanner.InsertOrUpdateMap)
 }
 
+// UpdateMap - Update a row, based on a map, in a table.
+//
+// Params:
+//     table string - The name of the table to update.
+//     sourceData map[string]interface{} - The map of col => value data to
+//     update in the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) UpdateMap(table string, sourceData map[string]interface{}) error {
+	return m.applyMapMutations(table, []map[string]interface{}{sourceData}, spanner.UpdateMap)
+}
+
+// UpdateMapMulti - Update multiple rows, based on maps, in a table.
+//
+// Params:
+//     table string - The name of the table to update.
+//     sourceData []map[string]interface{} - Nested map of col => value data to
+//     update in the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) UpdateMapMulti(table string, sourceData []map[string]interface{}) error {
+	return m.applyMapMutations(table, sourceData, spanner.UpdateMap)
+}
+
 // InsertStruct - Insert a row, based on a struct, into a table.
 //
 // Params:
@@ -213,65 +269,29 @@ func (m *MonkeyWrench) InsertOrUpdateStructMulti(table string, sourceData interf
 	return m.applyStructMutations(table, sourceData, spanner.InsertOrUpdateStruct)
 }
 
-// Update - Update a row in a table.
-//
-// The supplied must match the names of the columns.
+// UpdateStruct - Update a row, based on a struct, into a table.
 //
 // Params:
 //     table string - The name of the table to update.
-//     cols []string - The columns to update.
-//     vals interface{} - The data to update.
+//     sourceData interface - The data struct to update in the table.
 //
 // Return:
 //     error - An error if it occurred.
-func (m *MonkeyWrench) Update(table string, cols []string, vals []interface{}) error {
-	return m.applyGenericMutations(table, cols, [][]interface{}{vals}, spanner.Update)
+func (m *MonkeyWrench) UpdateStruct(table string, sourceData interface{}) error {
+	return m.applyStructMutations(table, []interface{}{sourceData}, spanner.UpdateStruct)
 }
 
-// UpdateMulti - Update multiple rows in a table.
-//
-// The slice of values supplied must match the names of the columns.
-//
-// Params:
-//     table string - The name of the table to update
-//     cols []string - The columns to update.
-//     sourceData [][]interface{} - A slice of data to update.
-//
-// Return:
-//     error - An error if it occurred.
-func (m *MonkeyWrench) UpdateMulti(table string, cols []string, sourceData [][]interface{}) error {
-	return m.applyGenericMutations(table, cols, sourceData, spanner.Update)
-}
-
-// UpdateMap - Update a row, based on a map, in a table.
+// UpdateStructMulti - Update multiple rows, based on a struct, in a table.
 //
 // Params:
 //     table string - The name of the table to update.
-//     sourceData map[string]interface{} - The map of col => value data to
-//     update in the table.
+//     sourceData interface - The data struct to update in the table.
 //
 // Return:
 //     error - An error if it occurred.
-func (m *MonkeyWrench) UpdateMap(table string, sourceData map[string]interface{}) error {
-	return m.applyMapMutations(table, []map[string]interface{}{sourceData}, spanner.UpdateMap)
+func (m *MonkeyWrench) UpdateStructMulti(table string, sourceData interface{}) error {
+	return m.applyStructMutations(table, sourceData, spanner.UpdateStruct)
 }
-
-// UpdateMapMulti - Update multiple rows, based on maps, in a table.
-//
-// Params:
-//     table string - The name of the table to update.
-//     sourceData []map[string]interface{} - Nested map of col => value data to
-//     update in the table.
-//
-// Return:
-//     error - An error if it occurred.
-func (m *MonkeyWrench) UpdateMapMulti(table string, sourceData []map[string]interface{}) error {
-	return m.applyMapMutations(table, sourceData, spanner.UpdateMap)
-}
-
-// TODO: Implement update single struct function.
-
-// TODO: Implement update multiple struct function.
 
 // TODO: Implement generic single delete function.
 
