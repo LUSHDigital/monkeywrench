@@ -249,3 +249,141 @@ func ExampleMonkeyWrench_InsertOrUpdateMapMulti() {
 		os.Exit(1)
 	}
 }
+
+// ExampleMonkeyWrench_InsertStruct - Example of the InsertStruct function.
+func ExampleMonkeyWrench_InsertStruct() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// This is a singer.
+	type Singer struct {
+		SingerID  int `spanner:"SingerId"`
+		FirstName string
+		LastName  string
+	}
+
+	// Insert a single row.
+	if insertErr := mW.InsertStruct("Singers", Singer{SingerID: 1, FirstName: "Joe", LastName: "Bloggs"}); insertErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to insert into Spanner. Reason - %+v\n", insertErr)
+		os.Exit(1)
+	}
+}
+
+// ExampleMonkeyWrench_InsertStructMulti - Example of the InsertStructMulti function.
+func ExampleMonkeyWrench_InsertStructMulti() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// This is a singer.
+	type Singer struct {
+		SingerID  int `spanner:"SingerId"`
+		FirstName string
+		LastName  string
+	}
+
+	singers := []Singer{
+		Singer{SingerID: 2, FirstName: "John", LastName: "Smith"},
+		Singer{SingerID: 3, FirstName: "Anne", LastName: "Other"},
+	}
+
+	// Insert multiple rows.
+	if insertErr := mW.InsertStructMulti("Singers", singers); insertErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to insert into Spanner. Reason - %+v\n", insertErr)
+		os.Exit(1)
+	}
+}
+
+// ExampleMonkeyWrench_InsertOrUpdateStruct - Example of the InsertOrUpdateStruct function.
+func ExampleMonkeyWrench_InsertOrUpdateStruct() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// This is a singer.
+	type Singer struct {
+		SingerID  int `spanner:"SingerId"`
+		FirstName string
+		LastName  string
+	}
+
+	// Insert a single row.
+	if insertErr := mW.InsertOrUpdateStruct("Singers", Singer{SingerID: 1, FirstName: "Joe", LastName: "Bloggs"}); insertErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to insert into Spanner. Reason - %+v\n", insertErr)
+		os.Exit(1)
+	}
+}
+
+// ExampleMonkeyWrench_InsertOrUpdateStructMulti - Example of the InsertOrUpdateStructMulti function.
+func ExampleMonkeyWrench_InsertOrUpdateStructMulti() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// This is a singer.
+	type Singer struct {
+		SingerID  int `spanner:"SingerId"`
+		FirstName string
+		LastName  string
+	}
+
+	singers := []Singer{
+		Singer{SingerID: 2, FirstName: "John", LastName: "Smith"},
+		Singer{SingerID: 3, FirstName: "Anne", LastName: "Other"},
+	}
+
+	// Insert multiple rows.
+	if insertErr := mW.InsertOrUpdateStructMulti("Singers", singers); insertErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to insert into Spanner. Reason - %+v\n", insertErr)
+		os.Exit(1)
+	}
+}

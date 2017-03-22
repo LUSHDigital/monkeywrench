@@ -163,13 +163,55 @@ func (m *MonkeyWrench) InsertOrUpdateMapMulti(table string, sourceData []map[str
 	return m.applyMapMutations(table, sourceData, spanner.InsertOrUpdateMap)
 }
 
-// TODO: Implement insert single struct function.
+// InsertStruct - Insert a row, based on a struct, into a table
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     sourceData interface - The data struct to insert into the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertStruct(table string, sourceData interface{}) error {
+	return m.applyStructMutations(table, []interface{}{sourceData}, spanner.InsertStruct)
+}
 
-// TODO: Implement insert multiple struct function.
+// InsertStructMulti - Insert multiple rows, based on a struct, into a table
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     sourceData interface - The data struct to insert into the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertStructMulti(table string, sourceData interface{}) error {
+	return m.applyStructMutations(table, sourceData, spanner.InsertStruct)
+}
 
-// TODO: Implement insertOrUpdate single struct function.
+// InsertOrUpdateStruct - Insert or update a row, based on a struct, into a
+// table
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     sourceData interface - The data struct to insert into the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertOrUpdateStruct(table string, sourceData interface{}) error {
+	return m.applyStructMutations(table, []interface{}{sourceData}, spanner.InsertOrUpdateStruct)
+}
 
-// TODO: Implement insertOrUpdate multiple struct function.
+// InsertOrUpdateStructMulti - Insert or update multiple rows, based on a
+// struct, into a table
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     sourceData interface - The data struct to insert into the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertOrUpdateStructMulti(table string, sourceData interface{}) error {
+	return m.applyStructMutations(table, sourceData, spanner.InsertOrUpdateStruct)
+}
 
 // TODO: Implement generic single update function.
 
