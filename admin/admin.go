@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/LUSHDigital/monkeywrench"
+
 	"google.golang.org/api/option"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -49,7 +51,7 @@ func (a *SpannerAdmin) CreateDatabase(db string, ddl []string) error {
 	fmt.Println("Creating Cloud Spanner database.")
 
 	op, err := a.AdminClient.CreateDatabase(a.Context, &adminpb.CreateDatabaseRequest{
-		Parent:          fmt.Sprintf(fqParentPattern, a.Project, a.Instance),
+		Parent:          fmt.Sprintf(monkeywrench.FqParentPattern, a.Project, a.Instance),
 		CreateStatement: "CREATE DATABASE `" + db + "`",
 		ExtraStatements: ddl,
 	})
@@ -84,7 +86,7 @@ func (a *SpannerAdmin) CreateDatabase(db string, ddl []string) error {
 func (a *SpannerAdmin) AlterDatabase(db string, ddl []string) error {
 	fmt.Println("Altering Cloud Spanner database.")
 	op, err := a.AdminClient.UpdateDatabaseDdl(a.Context, &adminpb.UpdateDatabaseDdlRequest{
-		Database:   fmt.Sprintf(fqDbPattern, a.Project, a.Instance, db),
+		Database:   fmt.Sprintf(monkeywrench.FqDbPattern, a.Project, a.Instance, db),
 		Statements: ddl,
 	})
 	if err != nil {

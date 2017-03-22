@@ -10,11 +10,13 @@ import (
 )
 
 const (
-	// The pattern to build the fully qualified Cloud Spanner parent name.
-	fqParentPattern = "projects/%s/instances/%s"
+	// FqParentPattern - The pattern to build the fully qualified Cloud Spanner
+	// parent name.
+	FqParentPattern = "projects/%s/instances/%s"
 
-	// The pattern to build the fully qualified Cloud Spanner database name.
-	fqDbPattern = "projects/%s/instances/%s/databases/%s"
+	// FqDbPattern - The pattern to build the fully qualified Cloud Spanner
+	// database name.
+	FqDbPattern = "projects/%s/instances/%s/databases/%s"
 )
 
 // MonkeyWrench - Wrapper for Cloud Spanner.
@@ -33,7 +35,7 @@ type MonkeyWrench struct {
 //     error - An error if it occurred.
 func (m *MonkeyWrench) CreateClient() error {
 	// Build the fully qualified db name.
-	fqDb := fmt.Sprintf(fqDbPattern, m.Project, m.Instance, m.Db)
+	fqDb := fmt.Sprintf(FqDbPattern, m.Project, m.Instance, m.Db)
 
 	// Create the client.
 	spannerClient, err := spanner.NewClient(m.Context, fqDb, m.Opts...)
