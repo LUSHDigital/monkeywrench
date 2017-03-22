@@ -109,17 +109,63 @@ func (m *MonkeyWrench) InsertOrUpdateMulti(table string, cols []string, sourceDa
 	return m.applyGenericMutations(table, cols, sourceData, spanner.InsertOrUpdate)
 }
 
-// TODO: Implement insert single map function.
+// InsertMap - Insert a row, based on a map, into a table
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     sourceData map[string]interface{} - The map of col => value data to
+//     insert into the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertMap(table string, sourceData map[string]interface{}) error {
+	return m.applyMapMutations(table, []map[string]interface{}{sourceData}, spanner.InsertMap)
+}
 
-// TODO: Implement insert multiple map function.
+// InsertMapMulti - Insert multiple rows, based on maps, into a table
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     sourceData []map[string]interface{} - Nested map of col => value data to
+//     insert into the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertMapMulti(table string, sourceData []map[string]interface{}) error {
+	return m.applyMapMutations(table, sourceData, spanner.InsertMap)
+}
+
+// InsertOrUpdateMap - Insert or update a row, based on a map, into
+// a table
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     sourceData map[string]interface{} - The map of col => value data to
+//     insert into the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertOrUpdateMap(table string, sourceData map[string]interface{}) error {
+	return m.applyMapMutations(table, []map[string]interface{}{sourceData}, spanner.InsertOrUpdateMap)
+}
+
+// InsertOrUpdateMapMulti - Insert or update multiple rows, based on maps, into
+// a table
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     sourceData []map[string]interface{} - Nested map of col => value data to
+//     insert into the table.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertOrUpdateMapMulti(table string, sourceData []map[string]interface{}) error {
+	return m.applyMapMutations(table, sourceData, spanner.InsertOrUpdateMap)
+}
 
 // TODO: Implement insert single struct function.
 
 // TODO: Implement insert multiple struct function.
-
-// TODO: Implement insertOrUpdate single map function.
-
-// TODO: Implement insertOrUpdate multiple map function.
 
 // TODO: Implement insertOrUpdate single struct function.
 
@@ -182,7 +228,86 @@ func (m *MonkeyWrench) applyGenericMutations(table string, cols []string, source
 		mutations = append(mutations, generator(table, cols, value))
 	}
 
-	// Do the insert.
+	// Apply the mutations.
+	err := m.applyMutations(mutations)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// applyMapMutations - Apply a set of map mutations.
+//
+// This function is intended to generate and apply mutations based on maps.
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     cols []string - The columns to insert data into.
+//     sourceData interface{} - The data to import.
+//     generator func(table string, data map[string]interface{}) *spanner.Mutation - The callback to generate mutations.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) applyMapMutations(table string, sourceData []map[string]interface{}, generator func(table string, data map[string]interface{}) *spanner.Mutation) error {
+	// Get the values from the passed source data.
+	vals := reflect.ValueOf(sourceData)
+
+	// Check the type of data we were passed is vald.
+	dataKind := vals.Type().Kind()
+	if dataKind != reflect.Slice && dataKind != reflect.Array {
+		return fmt.Errorf("Unsupported type: %s", dataKind.String())
+	}
+
+	// Create a mutation for each value set we have.
+	mutations := make([]*spanner.Mutation, 0, vals.Len())
+	for _, value := range sourceData {
+		mutations = append(mutations, generator(table, value))
+	}
+
+	// Apply the mutations.
+	err := m.applyMutations(mutations)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// applyStructMutations - Apply a set of structured mutations.
+//
+// This function is intended to generate and apply mutations based on structs.
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     cols []string - The columns to insert data into.
+//     sourceData interface{} - The data to import.
+//     generator func(table string, data interface{}) (*spanner.Mutation, error) - The callback to generate mutations.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) applyStructMutations(table string, sourceData interface{}, generator func(table string, data interface{}) (*spanner.Mutation, error)) error {
+	// Get the values from the passed source data.
+	vals := reflect.Indirect(reflect.ValueOf(sourceData))
+
+	// Check the type of data we were passed is vald.
+	dataKind := vals.Type().Kind()
+	if dataKind != reflect.Slice && dataKind != reflect.Array {
+		return fmt.Errorf("Unsupported type: %s", dataKind.String())
+	}
+
+	// Create a mutation for each value set we have.
+	mutations := make([]*spanner.Mutation, 0, vals.Len())
+	for i := 0; i < vals.Len(); i++ {
+		value := vals.Index(i)
+		mutation, err := generator(table, value.Interface())
+		if err != nil {
+			return err
+		}
+		mutations = append(mutations, mutation)
+	}
+
+	// Apply the mutations.
 	err := m.applyMutations(mutations)
 	if err != nil {
 		return err

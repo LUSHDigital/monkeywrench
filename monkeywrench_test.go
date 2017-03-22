@@ -139,3 +139,113 @@ func ExampleMonkeyWrench_InsertOrUpdateMulti() {
 		os.Exit(1)
 	}
 }
+
+// ExampleMonkeyWrench_InsertMap - Example of the InsertMap function.
+func ExampleMonkeyWrench_InsertMap() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// Insert a single row.
+	if insertErr := mW.InsertMap("Singers", map[string]interface{}{"SingerId": 1, "FirstName": "Joe", "LastName": "Bloggs"}); insertErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to insert into Spanner. Reason - %+v\n", insertErr)
+		os.Exit(1)
+	}
+}
+
+// ExampleMonkeyWrench_InsertMapMulti - Example of the InsertMapMulti function.
+func ExampleMonkeyWrench_InsertMapMulti() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	singers := []map[string]interface{}{
+		map[string]interface{}{"SingerId": 2, "FirstName": "John", "LastName": "Smith"},
+		map[string]interface{}{"SingerId": 3, "FirstName": "Anne", "LastName": "Other"},
+	}
+
+	// Insert multiple rows.
+	if insertErr := mW.InsertMapMulti("Singers", singers); insertErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to insert into Spanner. Reason - %+v\n", insertErr)
+		os.Exit(1)
+	}
+}
+
+// ExampleMonkeyWrench_InsertOrUpdateMap - Example of the InsertOrUpdateMap function.
+func ExampleMonkeyWrench_InsertOrUpdateMap() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// Insert a single row.
+	if insertErr := mW.InsertOrUpdateMap("Singers", map[string]interface{}{"SingerId": 1, "FirstName": "J", "LastName": "Bloggs"}); insertErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to insert into Spanner. Reason - %+v\n", insertErr)
+		os.Exit(1)
+	}
+}
+
+// ExampleMonkeyWrench_InsertOrUpdateMapMulti - Example of the InsertOrUpdateMapMulti function.
+func ExampleMonkeyWrench_InsertOrUpdateMapMulti() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	singers := []map[string]interface{}{
+		map[string]interface{}{"SingerId": 2, "FirstName": "J", "LastName": "Smith"},
+		map[string]interface{}{"SingerId": 3, "FirstName": "A", "LastName": "Other"},
+	}
+
+	// Insert multiple rows.
+	if insertErr := mW.InsertOrUpdateMapMulti("Singers", singers); insertErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to insert into Spanner. Reason - %+v\n", insertErr)
+		os.Exit(1)
+	}
+}
