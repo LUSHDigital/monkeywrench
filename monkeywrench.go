@@ -56,12 +56,12 @@ func (m *MonkeyWrench) CreateClient() error {
 // Params:
 //     table string - The name of the table to insert into.
 //     cols []string - The columns to insert data into.
-//     vals interface{} - The values to import.
+//     vals interface{} - The data to import.
 //
 // Return:
 //     error - An error if it occurred.
 func (m *MonkeyWrench) Insert(table string, cols []string, vals []interface{}) error {
-	return m.InsertMulti(table, cols, [][]interface{}{vals})
+	return m.applyGenericMutations(table, cols, [][]interface{}{vals}, spanner.Insert)
 }
 
 // InsertMulti - Insert multiple rows into a table.
@@ -71,11 +71,102 @@ func (m *MonkeyWrench) Insert(table string, cols []string, vals []interface{}) e
 // Params:
 //     table string - The name of the table to insert into.
 //     cols []string - The columns to insert data into.
-//     vals []interface{} - A slice of values to import.
+//     sourceData [][]interface{} - A slice of data to import.
 //
 // Return:
 //     error - An error if it occurred.
 func (m *MonkeyWrench) InsertMulti(table string, cols []string, sourceData [][]interface{}) error {
+	return m.applyGenericMutations(table, cols, sourceData, spanner.Insert)
+}
+
+// InsertOrUpdate - Insert or update a row into a table.
+//
+// The slice of values supplied must match the names of the columns.
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     cols []string - The columns to insert data into.
+//     sourceData [][]interface{} - The values to import.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertOrUpdate(table string, cols []string, vals []interface{}) error {
+	return m.applyGenericMutations(table, cols, [][]interface{}{vals}, spanner.InsertOrUpdate)
+}
+
+// InsertOrUpdateMulti - Insert or update multiple rows into a table.
+//
+// The slice of values supplied must match the names of the columns.
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     cols []string - The columns to insert data into.
+//     sourceData [][]interface{} - The values to import.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertOrUpdateMulti(table string, cols []string, sourceData [][]interface{}) error {
+	return m.applyGenericMutations(table, cols, sourceData, spanner.InsertOrUpdate)
+}
+
+// TODO: Implement insert single map function.
+
+// TODO: Implement insert multiple map function.
+
+// TODO: Implement insert single struct function.
+
+// TODO: Implement insert multiple struct function.
+
+// TODO: Implement insertOrUpdate single map function.
+
+// TODO: Implement insertOrUpdate multiple map function.
+
+// TODO: Implement insertOrUpdate single struct function.
+
+// TODO: Implement insertOrUpdate multiple struct function.
+
+// TODO: Implement generic single update function.
+
+// TODO: Implement generic multiple update function.
+
+// TODO: Implement update single map function.
+
+// TODO: Implement update multiple map function.
+
+// TODO: Implement update single struct function.
+
+// TODO: Implement update multiple struct function.
+
+// TODO: Implement generic single delete function.
+
+// TODO: Implement generic multiple delete function.
+
+// TODO: Implement delete single map function.
+
+// TODO: Implement delete multiple map function.
+
+// TODO: Implement delete single struct function.
+
+// TODO: Implement delete multiple struct function.
+
+// TODO: Implement select function (columns, table, conditions, force index - optional).
+
+// TODO: Implement generic query function.
+
+// applyGenericMutations - Apply a set of generic mutations.
+//
+// This function is intended to generate and apply mutations for generic data
+// based on key => value.
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     cols []string - The columns to insert data into.
+//     sourceData [][]interface{} - The data to import.
+//     generator func(table string, cols []string, vals []interface{}) *spanner.Mutation - The callback to generate mutations.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) applyGenericMutations(table string, cols []string, sourceData [][]interface{}, generator func(table string, cols []string, vals []interface{}) *spanner.Mutation) error {
 	// Get the values from the passed source data.
 	vals := reflect.ValueOf(sourceData)
 
@@ -88,7 +179,7 @@ func (m *MonkeyWrench) InsertMulti(table string, cols []string, sourceData [][]i
 	// Create a mutation for each value set we have.
 	mutations := make([]*spanner.Mutation, 0, vals.Len())
 	for _, value := range sourceData {
-		mutations = append(mutations, spanner.Insert(table, cols, value))
+		mutations = append(mutations, generator(table, cols, value))
 	}
 
 	// Do the insert.
@@ -99,54 +190,6 @@ func (m *MonkeyWrench) InsertMulti(table string, cols []string, sourceData [][]i
 
 	return nil
 }
-
-// TODO: Implement insert multiple map function.
-
-// TODO: Implement insert single map function.
-
-// TODO: Implement insert multiple struct function.
-
-// TODO: Implement insert single struct function.
-
-// TODO: Implement generic multiple insertOrUpdate function.
-
-// TODO: Implement generic single insertOrUpdate function.
-
-// TODO: Implement insertOrUpdate multiple map function.
-
-// TODO: Implement insertOrUpdate single map function.
-
-// TODO: Implement insertOrUpdate multiple struct function.
-
-// TODO: Implement insertOrUpdate single struct function.
-
-// TODO: Implement generic multiple update function.
-
-// TODO: Implement generic single update function.
-
-// TODO: Implement update multiple map function.
-
-// TODO: Implement update single map function.
-
-// TODO: Implement update multiple struct function.
-
-// TODO: Implement update single struct function.
-
-// TODO: Implement select function (columns, table, conditions, force index - optional).
-
-// TODO: Implement generic query function.
-
-// TODO: Implement generic multiple delete function.
-
-// TODO: Implement generic single delete function.
-
-// TODO: Implement delete multiple map function.
-
-// TODO: Implement delete single map function.
-
-// TODO: Implement delete multiple struct function.
-
-// TODO: Implement delete single struct function.
 
 // applyMutations - Apply a set of mutations to Cloud Spanner
 //
