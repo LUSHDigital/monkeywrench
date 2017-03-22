@@ -3,6 +3,7 @@ package monkeywrench
 import (
 	"context"
 	"fmt"
+	"reflect"
 
 	"google.golang.org/api/option"
 
@@ -59,8 +60,8 @@ func (m *MonkeyWrench) CreateClient() error {
 //
 // Return:
 //     error - An error if it occurred.
-func (m *MonkeyWrench) Insert(table string, cols []string, vals interface{}) error {
-	return m.InsertMulti(table, cols, []interface{}{vals})
+func (m *MonkeyWrench) Insert(table string, cols []string, vals []interface{}) error {
+	return m.InsertMulti(table, cols, [][]interface{}{vals})
 }
 
 // InsertMulti - Insert multiple rows into a table.
@@ -74,12 +75,24 @@ func (m *MonkeyWrench) Insert(table string, cols []string, vals interface{}) err
 //
 // Return:
 //     error - An error if it occurred.
-func (m *MonkeyWrench) InsertMulti(table string, cols []string, vals []interface{}) error {
-	// Get the mutation for the insert.
-	mutation := spanner.Insert(table, cols, vals)
+func (m *MonkeyWrench) InsertMulti(table string, cols []string, sourceData [][]interface{}) error {
+	// Get the values from the passed source data.
+	vals := reflect.ValueOf(sourceData)
+
+	// Check the type of data we were passed is vald.
+	dataKind := vals.Type().Kind()
+	if dataKind != reflect.Slice && dataKind != reflect.Array {
+		return fmt.Errorf("Unsupported type: %s", dataKind.String())
+	}
+
+	// Create a mutation for each value set we have.
+	mutations := make([]*spanner.Mutation, 0, vals.Len())
+	for _, value := range sourceData {
+		mutations = append(mutations, spanner.Insert(table, cols, value))
+	}
 
 	// Do the insert.
-	err := m.applyMutations([]*spanner.Mutation{mutation})
+	err := m.applyMutations(mutations)
 	if err != nil {
 		return err
 	}
