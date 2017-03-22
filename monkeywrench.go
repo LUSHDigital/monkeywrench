@@ -213,9 +213,35 @@ func (m *MonkeyWrench) InsertOrUpdateStructMulti(table string, sourceData interf
 	return m.applyStructMutations(table, sourceData, spanner.InsertOrUpdateStruct)
 }
 
-// TODO: Implement generic single update function.
+// Update - Update a row in a table.
+//
+// The supplied must match the names of the columns.
+//
+// Params:
+//     table string - The name of the table to update.
+//     cols []string - The columns to update.
+//     vals interface{} - The data to update.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) Update(table string, cols []string, vals []interface{}) error {
+	return m.applyGenericMutations(table, cols, [][]interface{}{vals}, spanner.Update)
+}
 
-// TODO: Implement generic multiple update function.
+// UpdateMulti - Update multiple rows in a table.
+//
+// The slice of values supplied must match the names of the columns.
+//
+// Params:
+//     table string - The name of the table to update
+//     cols []string - The columns to update.
+//     sourceData [][]interface{} - A slice of data to update.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) UpdateMulti(table string, cols []string, sourceData [][]interface{}) error {
+	return m.applyGenericMutations(table, cols, sourceData, spanner.Update)
+}
 
 // TODO: Implement update single map function.
 
