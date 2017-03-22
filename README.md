@@ -10,4 +10,5 @@ $ go get -u github.com/LUSHDigital/monkeywrench
 ```
 
 ## Documentation
-See [GoDoc](https://godoc.org/github.com/LUSHDigital/monkeywrench)
+* [Main package](https://godoc.org/github.com/LUSHDigital/monkeywrench)
+* [Admin package](https://godoc.org/github.com/LUSHDigital/monkeywrench/admin)

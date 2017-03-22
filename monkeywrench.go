@@ -48,9 +48,44 @@ func (m *MonkeyWrench) CreateClient() error {
 	return nil
 }
 
-// TODO: Implement generic multiple insert function.
+// Insert - Insert a row into a table.
+//
+// The supplied must match the names of the columns.
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     cols []string - The columns to insert data into.
+//     vals interface{} - The values to import.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) Insert(table string, cols []string, vals interface{}) error {
+	return m.InsertMulti(table, cols, []interface{}{vals})
+}
 
-// TODO: Implement generic single insert function.
+// InsertMulti - Insert multiple rows into a table.
+//
+// The slice of values supplied must match the names of the columns.
+//
+// Params:
+//     table string - The name of the table to insert into.
+//     cols []string - The columns to insert data into.
+//     vals []interface{} - A slice of values to import.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) InsertMulti(table string, cols []string, vals []interface{}) error {
+	// Get the mutation for the insert.
+	mutation := spanner.Insert(table, cols, vals)
+
+	// Do the insert.
+	err := m.applyMutations([]*spanner.Mutation{mutation})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // TODO: Implement insert multiple map function.
 
@@ -99,3 +134,19 @@ func (m *MonkeyWrench) CreateClient() error {
 // TODO: Implement delete multiple struct function.
 
 // TODO: Implement delete single struct function.
+
+// applyMutations - Apply a set of mutations to Cloud Spanner
+//
+// Params:
+//     mutations []*spanner.Mutation - The mutations to apply.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) applyMutations(mutations []*spanner.Mutation) error {
+	_, err := m.Client.Apply(m.Context, mutations)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
