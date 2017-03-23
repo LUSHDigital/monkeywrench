@@ -835,10 +835,8 @@ func ExampleMonkeyWrench_Read_multistruct() {
 		LastName  string
 	}
 
-	var aSinger Singer
-
 	// Get the columns from the struct.
-	structCols, err := GetColsFromStruct(aSinger)
+	structCols, err := GetColsFromStruct(&Singer{})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to get columns from struct. Reason - %+v\n", err)
 		os.Exit(1)
