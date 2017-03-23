@@ -809,6 +809,8 @@ func ExampleMonkeyWrench_ReadUsingIndex() {
 	}
 }
 
+// ExampleMonkeyWrench_Read_multistruct - Example usage of the Read function to
+// get multiple structs from result rows.
 func ExampleMonkeyWrench_Read_multistruct() {
 	ctx := context.Background()
 
