@@ -394,7 +394,7 @@ func ExampleMonkeyWrench_InsertStruct() {
 
 	// This is a singer.
 	type Singer struct {
-		SingerID  int `spanner:"SingerId"`
+		SingerID  int64 `spanner:"SingerId"`
 		FirstName string
 		LastName  string
 	}
@@ -426,7 +426,7 @@ func ExampleMonkeyWrench_InsertStructMulti() {
 
 	// This is a singer.
 	type Singer struct {
-		SingerID  int `spanner:"SingerId"`
+		SingerID  int64 `spanner:"SingerId"`
 		FirstName string
 		LastName  string
 	}
@@ -463,7 +463,7 @@ func ExampleMonkeyWrench_InsertOrUpdateStruct() {
 
 	// This is a singer.
 	type Singer struct {
-		SingerID  int `spanner:"SingerId"`
+		SingerID  int64 `spanner:"SingerId"`
 		FirstName string
 		LastName  string
 	}
@@ -495,7 +495,7 @@ func ExampleMonkeyWrench_InsertOrUpdateStructMulti() {
 
 	// This is a singer.
 	type Singer struct {
-		SingerID  int `spanner:"SingerId"`
+		SingerID  int64 `spanner:"SingerId"`
 		FirstName string
 		LastName  string
 	}
@@ -532,7 +532,7 @@ func ExampleMonkeyWrench_UpdateStruct() {
 
 	// This is a singer.
 	type Singer struct {
-		SingerID  int `spanner:"SingerId"`
+		SingerID  int64 `spanner:"SingerId"`
 		FirstName string
 		LastName  string
 	}
@@ -564,7 +564,7 @@ func ExampleMonkeyWrench_UpdateStructMulti() {
 
 	// This is a singer.
 	type Singer struct {
-		SingerID  int `spanner:"SingerId"`
+		SingerID  int64 `spanner:"SingerId"`
 		FirstName string
 		LastName  string
 	}
@@ -807,4 +807,91 @@ func ExampleMonkeyWrench_ReadUsingIndex() {
 		// What did we get?
 		fmt.Printf("Found singer: %s %s\n", FirstName, LastName)
 	}
+}
+
+func ExampleMonkeyWrench_Read_multistruct() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// This is a singer.
+	type Singer struct {
+		SingerID  int64 `spanner:"SingerId"`
+		FirstName string
+		LastName  string
+	}
+
+	var aSinger Singer
+
+	// Get the columns from the struct.
+	structCols, err := GetColsFromStruct(aSinger)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to get columns from struct. Reason - %+v\n", err)
+		os.Exit(1)
+	}
+
+	// Get all the things!
+	rows, err := mW.Read("Singers", []spanner.Key{}, structCols)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to read Spanner. Reason - %+v\n", err)
+		os.Exit(1)
+	}
+
+	// Print the results
+	for _, row := range rows {
+		var singer Singer
+		row.ToStruct(&singer)
+
+		fmt.Printf("Found a singer (%d) called %s %s\n", singer.SingerID, singer.FirstName, singer.LastName)
+	}
+}
+
+// ExampleMonkeyWrench_ReadToStruct - Example usage for the ReadToStruct function.
+func ExampleMonkeyWrench_ReadToStruct() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// This is a singer.
+	type Singer struct {
+		SingerID  int64 `spanner:"SingerId"`
+		FirstName string
+		LastName  string
+	}
+
+	var aSinger Singer
+
+	// Read a single result to a struct.
+	structErr := mW.ReadToStruct("Singers", spanner.Key{1}, &aSinger)
+	if structErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to read Spanner. Reason - %+v\n", structErr)
+		os.Exit(1)
+	}
+
+	// What did we get?
+	fmt.Printf("Found one singer (%d) called %s %s\n", aSinger.SingerID, aSinger.FirstName, aSinger.LastName)
 }

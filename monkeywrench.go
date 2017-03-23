@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"reflect"
 
-	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 
 	"cloud.google.com/go/spanner"
@@ -368,7 +367,7 @@ func (m *MonkeyWrench) DeleteKeyRange(table string, startKey, endKey spanner.Key
 func (m *MonkeyWrench) Query(statement string) ([]*spanner.Row, error) {
 	// Execute the query.
 	iter := m.Client.Single().Query(m.Context, spanner.NewStatement(statement))
-	return m.getResultSlice(iter)
+	return getResultSlice(iter)
 }
 
 // Read - Read multiple rows from Cloud Spanner.
@@ -394,7 +393,7 @@ func (m *MonkeyWrench) Read(table string, keys []spanner.Key, columns []string) 
 
 	// Execute the query.
 	iter := m.Client.Single().Read(m.Context, table, spannerKeys, columns)
-	return m.getResultSlice(iter)
+	return getResultSlice(iter)
 }
 
 // ReadUsingIndex - Read multiple rows from Cloud Spanner using an index.
@@ -420,10 +419,48 @@ func (m *MonkeyWrench) ReadUsingIndex(table, index string, keys []spanner.Key, c
 
 	// Execute the query.
 	iter := m.Client.Single().ReadUsingIndex(m.Context, table, index, spannerKeys, columns)
-	return m.getResultSlice(iter)
+	return getResultSlice(iter)
 }
 
-// TODO: Implement read to struct function.
+// ReadToStruct - Read a row from Spanner table to a struct.
+//
+// Params:
+//     table string - Name of the table to read from.
+//     keys []spanner.Key - List of keys for the rows to read. Passing an empty
+//     slice will cause all rows to be returned.
+//     dst interface - Destination struct.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) ReadToStruct(table string, key spanner.Key, dst interface{}) error {
+	// Get the value of the destination parameter.
+	dstValue := reflect.Indirect(reflect.ValueOf(dst))
+
+	// Check we were passed a valid data type.
+	dataType := dstValue.Type().Kind()
+	if dataType != reflect.Struct {
+		return fmt.Errorf("Unsupported data type: %s", dataType.String())
+	}
+
+	// The columns to read.
+	cols, err := GetColsFromStruct(dst)
+	if err != nil {
+		return fmt.Errorf("Could not get columns from struct. Reason: %s", err)
+	}
+
+	// Perform the read.
+	rows, err := m.Read(table, []spanner.Key{key}, cols)
+	if err != nil {
+		return err
+	}
+
+	// Decode the row onto the struct.
+	for _, row := range rows {
+		row.ToStruct(dst)
+	}
+
+	return nil
+}
 
 // applyGenericMutations - Apply a set of generic mutations.
 //
@@ -556,29 +593,4 @@ func (m *MonkeyWrench) applyMutations(mutations []*spanner.Mutation) error {
 	}
 
 	return nil
-}
-
-// getResultSlice - Get the results of a row iterator as a slice.
-//
-// Params:
-//     iter *spanner.RowIterator - The iterator from a query or read.
-//
-// Return:
-//     []*spanner.Row - A list of all rows returned by the query.
-//     error - An error if it occurred.
-func (m *MonkeyWrench) getResultSlice(iter *spanner.RowIterator) ([]*spanner.Row, error) {
-	var results []*spanner.Row
-
-	defer iter.Stop()
-	for {
-		row, err := iter.Next()
-		if err == iterator.Done {
-			return results, nil
-		}
-		if err != nil {
-			return nil, err
-		}
-
-		results = append(results, row)
-	}
 }
