@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
+
+	"cloud.google.com/go/spanner"
 )
 
 // ExampleMonkeyWrench_Insert - Example of the Insert function.
@@ -575,6 +577,81 @@ func ExampleMonkeyWrench_UpdateStructMulti() {
 	// Update multiple rows.
 	if err := mW.UpdateStructMulti("Singers", singers); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to insert into Spanner. Reason - %+v\n", err)
+		os.Exit(1)
+	}
+}
+
+// ExampleMonkeyWrench_Delete - Example of the Delete function.
+func ExampleMonkeyWrench_Delete() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// Delete a row.
+	if deleteErr := mW.Delete("Singers", 2); deleteErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to delete from Spanner. Reason - %+v\n", deleteErr)
+		os.Exit(1)
+	}
+}
+
+// ExampleMonkeyWrench_DeleteMulti - Example of the DeleteMulti function.
+func ExampleMonkeyWrench_DeleteMulti() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// Delete multiple rows.
+	if deleteErr := mW.DeleteMulti("Singers", []interface{}{1, 4}); deleteErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to delete from Spanner. Reason - %+v\n", deleteErr)
+		os.Exit(1)
+	}
+}
+
+// ExampleMonkeyWrench_DeleteKeyRange - Example of the DeleteKeyRange function.
+func ExampleMonkeyWrench_DeleteKeyRange() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// Delete multiple rows.
+	if deleteErr := mW.DeleteKeyRange("Singers", 2, 4, spanner.ClosedClosed); deleteErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to delete from Spanner. Reason - %+v\n", deleteErr)
 		os.Exit(1)
 	}
 }

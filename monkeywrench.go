@@ -293,17 +293,68 @@ func (m *MonkeyWrench) UpdateStructMulti(table string, sourceData interface{}) e
 	return m.applyStructMutations(table, sourceData, spanner.UpdateStruct)
 }
 
-// TODO: Implement generic single delete function.
+// Delete - Delete a row from a table by key.
+//
+// Params:
+//     table string - The table to delete from.
+//     keys interface{} - The key to delete.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) Delete(table string, key interface{}) error {
+	return m.DeleteMulti(table, []interface{}{key})
+}
 
-// TODO: Implement generic multiple delete function.
+// DeleteMulti - Delete multiple rows from a table by key.
+//
+// Params:
+//     table string - The table to delete from.
+//     keys []spanner.Key - The list of keys to delete.
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) DeleteMulti(table string, keys []interface{}) error {
+	// Create a mutation for each value set we have.
+	mutations := make([]*spanner.Mutation, 0, len(keys))
+	for _, key := range keys {
+		mutations = append(mutations, spanner.Delete(table, spanner.Key{key}))
+	}
 
-// TODO: Implement delete single map function.
+	// Apply the mutations.
+	err := m.applyMutations(mutations)
+	if err != nil {
+		return err
+	}
 
-// TODO: Implement delete multiple map function.
+	return nil
+}
 
-// TODO: Implement delete single struct function.
+// DeleteKeyRange - Delete a range of rows by key.
+//
+// Params:
+//     table string - The table to delete rows from.
+//     startKey interface{} - The starting value of the range.
+//     endKey interface{} - The ending value of the range.
+//     rangeKind spanner.KeyRangeKind - The kind of range (includes keys or not)
+//
+// Return:
+//     error - An error if it occurred.
+func (m *MonkeyWrench) DeleteKeyRange(table string, startKey, endKey interface{}, rangeKind spanner.KeyRangeKind) error {
+	// Create the mutation.
+	mutation := spanner.DeleteKeyRange(table, spanner.KeyRange{
+		Start: spanner.Key{startKey},
+		End:   spanner.Key{endKey},
+		Kind:  rangeKind,
+	})
 
-// TODO: Implement delete multiple struct function.
+	// Apply the mutations.
+	err := m.applyMutations([]*spanner.Mutation{mutation})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // TODO: Implement select function (columns, table, conditions, force index - optional).
 
