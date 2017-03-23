@@ -8,7 +8,7 @@ import (
 	"cloud.google.com/go/spanner"
 )
 
-// ExampleMonkeyWrench_Insert - Example of the Insert function.
+// ExampleMonkeyWrench_Insert - Example usage for the Insert function.
 func ExampleMonkeyWrench_Insert() {
 	ctx := context.Background()
 
@@ -39,7 +39,7 @@ func ExampleMonkeyWrench_Insert() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertMulti - Example of the InsertMulti function.
+// ExampleMonkeyWrench_InsertMulti - Example usage for the InsertMulti function.
 func ExampleMonkeyWrench_InsertMulti() {
 	ctx := context.Background()
 
@@ -75,7 +75,7 @@ func ExampleMonkeyWrench_InsertMulti() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertOrUpdate - Example of the InsertOrUpdate function.
+// ExampleMonkeyWrench_InsertOrUpdate - Example usage for the InsertOrUpdate function.
 func ExampleMonkeyWrench_InsertOrUpdate() {
 	ctx := context.Background()
 
@@ -106,7 +106,7 @@ func ExampleMonkeyWrench_InsertOrUpdate() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertOrUpdateMulti - Example of the InsertOrUpdateMulti function.
+// ExampleMonkeyWrench_InsertOrUpdateMulti - Example usage for the InsertOrUpdateMulti function.
 func ExampleMonkeyWrench_InsertOrUpdateMulti() {
 	ctx := context.Background()
 
@@ -142,7 +142,7 @@ func ExampleMonkeyWrench_InsertOrUpdateMulti() {
 	}
 }
 
-// ExampleMonkeyWrench_Update - Example of the Update function.
+// ExampleMonkeyWrench_Update - Example usage for the Update function.
 func ExampleMonkeyWrench_Update() {
 	ctx := context.Background()
 
@@ -173,7 +173,7 @@ func ExampleMonkeyWrench_Update() {
 	}
 }
 
-// ExampleMonkeyWrench_UpdateMulti - Example of the UpdateMulti function.
+// ExampleMonkeyWrench_UpdateMulti - Example usage for the UpdateMulti function.
 func ExampleMonkeyWrench_UpdateMulti() {
 	ctx := context.Background()
 
@@ -209,7 +209,7 @@ func ExampleMonkeyWrench_UpdateMulti() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertMap - Example of the InsertMap function.
+// ExampleMonkeyWrench_InsertMap - Example usage for the InsertMap function.
 func ExampleMonkeyWrench_InsertMap() {
 	ctx := context.Background()
 
@@ -234,7 +234,7 @@ func ExampleMonkeyWrench_InsertMap() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertMapMulti - Example of the InsertMapMulti function.
+// ExampleMonkeyWrench_InsertMapMulti - Example usage for the InsertMapMulti function.
 func ExampleMonkeyWrench_InsertMapMulti() {
 	ctx := context.Background()
 
@@ -264,7 +264,7 @@ func ExampleMonkeyWrench_InsertMapMulti() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertOrUpdateMap - Example of the InsertOrUpdateMap function.
+// ExampleMonkeyWrench_InsertOrUpdateMap - Example usage for the InsertOrUpdateMap function.
 func ExampleMonkeyWrench_InsertOrUpdateMap() {
 	ctx := context.Background()
 
@@ -289,7 +289,7 @@ func ExampleMonkeyWrench_InsertOrUpdateMap() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertOrUpdateMapMulti - Example of the InsertOrUpdateMapMulti function.
+// ExampleMonkeyWrench_InsertOrUpdateMapMulti - Example usage for the InsertOrUpdateMapMulti function.
 func ExampleMonkeyWrench_InsertOrUpdateMapMulti() {
 	ctx := context.Background()
 
@@ -319,7 +319,7 @@ func ExampleMonkeyWrench_InsertOrUpdateMapMulti() {
 	}
 }
 
-// ExampleMonkeyWrench_UpdateMap - Example of the UpdateMap function.
+// ExampleMonkeyWrench_UpdateMap - Example usage for the UpdateMap function.
 func ExampleMonkeyWrench_UpdateMap() {
 	ctx := context.Background()
 
@@ -344,7 +344,7 @@ func ExampleMonkeyWrench_UpdateMap() {
 	}
 }
 
-// ExampleMonkeyWrench_UpdateMapMulti - Example of the UpdateMapMulti function.
+// ExampleMonkeyWrench_UpdateMapMulti - Example usage for the UpdateMapMulti function.
 func ExampleMonkeyWrench_UpdateMapMulti() {
 	ctx := context.Background()
 
@@ -374,7 +374,7 @@ func ExampleMonkeyWrench_UpdateMapMulti() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertStruct - Example of the InsertStruct function.
+// ExampleMonkeyWrench_InsertStruct - Example usage for the InsertStruct function.
 func ExampleMonkeyWrench_InsertStruct() {
 	ctx := context.Background()
 
@@ -406,7 +406,7 @@ func ExampleMonkeyWrench_InsertStruct() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertStructMulti - Example of the InsertStructMulti function.
+// ExampleMonkeyWrench_InsertStructMulti - Example usage for the InsertStructMulti function.
 func ExampleMonkeyWrench_InsertStructMulti() {
 	ctx := context.Background()
 
@@ -443,7 +443,7 @@ func ExampleMonkeyWrench_InsertStructMulti() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertOrUpdateStruct - Example of the InsertOrUpdateStruct function.
+// ExampleMonkeyWrench_InsertOrUpdateStruct - Example usage for the InsertOrUpdateStruct function.
 func ExampleMonkeyWrench_InsertOrUpdateStruct() {
 	ctx := context.Background()
 
@@ -475,7 +475,7 @@ func ExampleMonkeyWrench_InsertOrUpdateStruct() {
 	}
 }
 
-// ExampleMonkeyWrench_InsertOrUpdateStructMulti - Example of the InsertOrUpdateStructMulti function.
+// ExampleMonkeyWrench_InsertOrUpdateStructMulti - Example usage for the InsertOrUpdateStructMulti function.
 func ExampleMonkeyWrench_InsertOrUpdateStructMulti() {
 	ctx := context.Background()
 
@@ -512,7 +512,7 @@ func ExampleMonkeyWrench_InsertOrUpdateStructMulti() {
 	}
 }
 
-// ExampleMonkeyWrench_UpdateStruct - Example of the UpdateStruct function.
+// ExampleMonkeyWrench_UpdateStruct - Example usage for the UpdateStruct function.
 func ExampleMonkeyWrench_UpdateStruct() {
 	ctx := context.Background()
 
@@ -544,7 +544,7 @@ func ExampleMonkeyWrench_UpdateStruct() {
 	}
 }
 
-// ExampleMonkeyWrench_UpdateStructMulti - Example of the UpdateStructMulti function.
+// ExampleMonkeyWrench_UpdateStructMulti - Example usage for the UpdateStructMulti function.
 func ExampleMonkeyWrench_UpdateStructMulti() {
 	ctx := context.Background()
 
@@ -581,7 +581,7 @@ func ExampleMonkeyWrench_UpdateStructMulti() {
 	}
 }
 
-// ExampleMonkeyWrench_Delete - Example of the Delete function.
+// ExampleMonkeyWrench_Delete - Example usage for the Delete function.
 func ExampleMonkeyWrench_Delete() {
 	ctx := context.Background()
 
@@ -600,13 +600,13 @@ func ExampleMonkeyWrench_Delete() {
 	}
 
 	// Delete a row.
-	if deleteErr := mW.Delete("Singers", 2); deleteErr != nil {
+	if deleteErr := mW.Delete("Singers", spanner.Key{2}); deleteErr != nil {
 		fmt.Fprintf(os.Stderr, "Failed to delete from Spanner. Reason - %+v\n", deleteErr)
 		os.Exit(1)
 	}
 }
 
-// ExampleMonkeyWrench_DeleteMulti - Example of the DeleteMulti function.
+// ExampleMonkeyWrench_DeleteMulti - Example usage for the DeleteMulti function.
 func ExampleMonkeyWrench_DeleteMulti() {
 	ctx := context.Background()
 
@@ -625,13 +625,13 @@ func ExampleMonkeyWrench_DeleteMulti() {
 	}
 
 	// Delete multiple rows.
-	if deleteErr := mW.DeleteMulti("Singers", []interface{}{1, 4}); deleteErr != nil {
+	if deleteErr := mW.DeleteMulti("Singers", []spanner.Key{spanner.Key{1}, spanner.Key{4}}); deleteErr != nil {
 		fmt.Fprintf(os.Stderr, "Failed to delete from Spanner. Reason - %+v\n", deleteErr)
 		os.Exit(1)
 	}
 }
 
-// ExampleMonkeyWrench_DeleteKeyRange - Example of the DeleteKeyRange function.
+// ExampleMonkeyWrench_DeleteKeyRange - Example usage for the DeleteKeyRange function.
 func ExampleMonkeyWrench_DeleteKeyRange() {
 	ctx := context.Background()
 
@@ -650,12 +650,13 @@ func ExampleMonkeyWrench_DeleteKeyRange() {
 	}
 
 	// Delete multiple rows.
-	if deleteErr := mW.DeleteKeyRange("Singers", 2, 4, spanner.ClosedClosed); deleteErr != nil {
+	if deleteErr := mW.DeleteKeyRange("Singers", spanner.Key{2}, spanner.Key{4}, spanner.ClosedClosed); deleteErr != nil {
 		fmt.Fprintf(os.Stderr, "Failed to delete from Spanner. Reason - %+v\n", deleteErr)
 		os.Exit(1)
 	}
 }
 
+// ExampleMonkeyWrench_Query - Example usage for the Query function.
 func ExampleMonkeyWrench_Query() {
 	ctx := context.Background()
 
@@ -687,6 +688,121 @@ func ExampleMonkeyWrench_Query() {
 		// Get each result.
 		result.ColumnByName("FirstName", &FirstName)
 		result.ColumnByName("LastName", &LastName)
+
+		// What did we get?
+		fmt.Printf("Found singer: %s %s\n", FirstName, LastName)
+	}
+}
+
+// ExampleMonkeyWrench_Read - Example usage for the Read function.
+func ExampleMonkeyWrench_Read() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// Run the query for select keys.
+	results, err := mW.Read("Singers", []spanner.Key{spanner.Key{1}, spanner.Key{4}}, []string{"FirstName", "LastName"})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to read Spanner. Reason - %+v\n", err)
+		os.Exit(1)
+	}
+
+	// Print the results.
+	for _, result := range results {
+		var FirstName, LastName string
+
+		// Get each result.
+		result.ColumnByName("FirstName", &FirstName)
+		result.ColumnByName("LastName", &LastName)
+
+		// What did we get?
+		fmt.Printf("Found singer: %s %s\n", FirstName, LastName)
+	}
+
+	// Get all the things!
+	allResults, err := mW.Read("Singers", []spanner.Key{}, []string{"FirstName", "LastName"})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to read Spanner. Reason - %+v\n", err)
+		os.Exit(1)
+	}
+
+	// Print the results.
+	for _, aResult := range allResults {
+		var FirstName, LastName string
+
+		// Get each result.
+		aResult.ColumnByName("FirstName", &FirstName)
+		aResult.ColumnByName("LastName", &LastName)
+
+		// What did we get?
+		fmt.Printf("Found singer: %s %s\n", FirstName, LastName)
+	}
+}
+
+// ExampleMonkeyWrench_ReadUsingIndex - Example usage for the ReadUsingIndex function.
+func ExampleMonkeyWrench_ReadUsingIndex() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// Simple index
+	// Index DDL - `CREATE INDEX SingersByLastName ON Singers(LastName)`
+	results, err := mW.ReadUsingIndex("Singers", "SingersByLastName", []spanner.Key{}, []string{"LastName"})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to read Spanner using index. Reason - %+v\n", err)
+		os.Exit(1)
+	}
+
+	// Print the results.
+	for _, result := range results {
+		var LastName string
+
+		// Get each result.
+		result.ColumnByName("LastName", &LastName)
+
+		// What did we get?
+		fmt.Printf("Found last name: %s\n", LastName)
+	}
+
+	// Storing index
+	// Index DDL - `CREATE INDEX SingersByLastNameWithFirstName ON Singers(LastName) STORING (FirstName)`
+	storingResults, err := mW.ReadUsingIndex("Singers", "SingersByLastNameWithFirstName", []spanner.Key{}, []string{"FirstName", "LastName"})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to read Spanner using index. Reason - %+v\n", err)
+		os.Exit(1)
+	}
+
+	// Print the results.
+	for _, sResult := range storingResults {
+		var FirstName, LastName string
+
+		// Get each result.
+		sResult.ColumnByName("FirstName", &FirstName)
+		sResult.ColumnByName("LastName", &LastName)
 
 		// What did we get?
 		fmt.Printf("Found singer: %s %s\n", FirstName, LastName)

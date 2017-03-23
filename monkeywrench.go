@@ -298,12 +298,12 @@ func (m *MonkeyWrench) UpdateStructMulti(table string, sourceData interface{}) e
 //
 // Params:
 //     table string - The table to delete from.
-//     keys interface{} - The key to delete.
+//     key spanner.Key - The key to delete.
 //
 // Return:
 //     error - An error if it occurred.
-func (m *MonkeyWrench) Delete(table string, key interface{}) error {
-	return m.DeleteMulti(table, []interface{}{key})
+func (m *MonkeyWrench) Delete(table string, key spanner.Key) error {
+	return m.DeleteMulti(table, []spanner.Key{key})
 }
 
 // DeleteMulti - Delete multiple rows from a table by key.
@@ -314,11 +314,11 @@ func (m *MonkeyWrench) Delete(table string, key interface{}) error {
 //
 // Return:
 //     error - An error if it occurred.
-func (m *MonkeyWrench) DeleteMulti(table string, keys []interface{}) error {
+func (m *MonkeyWrench) DeleteMulti(table string, keys []spanner.Key) error {
 	// Create a mutation for each value set we have.
 	mutations := make([]*spanner.Mutation, 0, len(keys))
 	for _, key := range keys {
-		mutations = append(mutations, spanner.Delete(table, spanner.Key{key}))
+		mutations = append(mutations, spanner.Delete(table, key))
 	}
 
 	// Apply the mutations.
@@ -340,11 +340,11 @@ func (m *MonkeyWrench) DeleteMulti(table string, keys []interface{}) error {
 //
 // Return:
 //     error - An error if it occurred.
-func (m *MonkeyWrench) DeleteKeyRange(table string, startKey, endKey interface{}, rangeKind spanner.KeyRangeKind) error {
+func (m *MonkeyWrench) DeleteKeyRange(table string, startKey, endKey spanner.Key, rangeKind spanner.KeyRangeKind) error {
 	// Create the mutation.
 	mutation := spanner.DeleteKeyRange(table, spanner.KeyRange{
-		Start: spanner.Key{startKey},
-		End:   spanner.Key{endKey},
+		Start: startKey,
+		End:   endKey,
 		Kind:  rangeKind,
 	})
 
@@ -368,27 +368,60 @@ func (m *MonkeyWrench) DeleteKeyRange(table string, startKey, endKey interface{}
 func (m *MonkeyWrench) Query(statement string) ([]*spanner.Row, error) {
 	// Execute the query.
 	iter := m.Client.Single().Query(m.Context, spanner.NewStatement(statement))
-
-	// Prepare slice to store the results from the query.
-	var results []*spanner.Row
-
-	defer iter.Stop()
-	for {
-		row, err := iter.Next()
-		if err == iterator.Done {
-			return results, nil
-		}
-		if err != nil {
-			return nil, err
-		}
-
-		results = append(results, row)
-	}
+	return m.getResultSlice(iter)
 }
 
-// TODO: Implement read function (columns, table, conditions).
+// Read - Read multiple rows from Cloud Spanner.
+//
+// Params:
+//     table string - Name of the table to read rows from.
+//     index string - Name of the index to use from the table.
+//     keys []spanner.Key - Slice of keys for the rows to read. Passing an empty
+//     slice will cause all rows to be returned.
+//     columns []string - List of columns to read for each row.
+//
+// Return:
+//     []*spanner.Row - A list of all rows returned by the query.
+//     error - An error if it occurred.
+func (m *MonkeyWrench) Read(table string, keys []spanner.Key, columns []string) ([]*spanner.Row, error) {
+	// Default to all keys.
+	var spannerKeys = spanner.AllKeys()
 
-// TODO: Implement read with index function (columns, table, conditions, index).
+	// If we have some specified keys, use those instead.
+	if len(keys) > 0 {
+		spannerKeys = spanner.Keys(keys...)
+	}
+
+	// Execute the query.
+	iter := m.Client.Single().Read(m.Context, table, spannerKeys, columns)
+	return m.getResultSlice(iter)
+}
+
+// ReadUsingIndex - Read multiple rows from Cloud Spanner using an index.
+//
+// Params:
+//     table string - Name of the table to read rows from.
+//     index string - Name of the index to use from the table.
+//     keys []spanner.Key - List of keys for the rows to read. Passing an empty
+//     slice will cause all rows to be returned.
+//     columns []string - List of columns to read for each row.
+//
+// Return:
+//     []*spanner.Row - A list of all rows returned by the query.
+//     error - An error if it occurred.
+func (m *MonkeyWrench) ReadUsingIndex(table, index string, keys []spanner.Key, columns []string) ([]*spanner.Row, error) {
+	// Default to all keys.
+	var spannerKeys = spanner.AllKeys()
+
+	// If we have some specified keys, use those instead.
+	if len(keys) > 0 {
+		spannerKeys = spanner.Keys(keys...)
+	}
+
+	// Execute the query.
+	iter := m.Client.Single().ReadUsingIndex(m.Context, table, index, spannerKeys, columns)
+	return m.getResultSlice(iter)
+}
 
 // TODO: Implement read to struct function.
 
@@ -523,4 +556,29 @@ func (m *MonkeyWrench) applyMutations(mutations []*spanner.Mutation) error {
 	}
 
 	return nil
+}
+
+// getResultSlice - Get the results of a row iterator as a slice.
+//
+// Params:
+//     iter *spanner.RowIterator - The iterator from a query or read.
+//
+// Return:
+//     []*spanner.Row - A list of all rows returned by the query.
+//     error - An error if it occurred.
+func (m *MonkeyWrench) getResultSlice(iter *spanner.RowIterator) ([]*spanner.Row, error) {
+	var results []*spanner.Row
+
+	defer iter.Stop()
+	for {
+		row, err := iter.Next()
+		if err == iterator.Done {
+			return results, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, row)
+	}
 }
