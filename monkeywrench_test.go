@@ -655,3 +655,40 @@ func ExampleMonkeyWrench_DeleteKeyRange() {
 		os.Exit(1)
 	}
 }
+
+func ExampleMonkeyWrench_Query() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// Run the query.
+	results, err := mW.Query(`SELECT FirstName, LastName FROM Singers`)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to query Spanner. Reason - %+v\n", err)
+		os.Exit(1)
+	}
+
+	// Print the results.
+	for _, result := range results {
+		var FirstName, LastName string
+
+		// Get each result.
+		result.ColumnByName("FirstName", &FirstName)
+		result.ColumnByName("LastName", &LastName)
+
+		// What did we get?
+		fmt.Printf("Found singer: %s %s\n", FirstName, LastName)
+	}
+}

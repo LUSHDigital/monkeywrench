@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 
 	"cloud.google.com/go/spanner"
@@ -356,9 +357,40 @@ func (m *MonkeyWrench) DeleteKeyRange(table string, startKey, endKey interface{}
 	return nil
 }
 
-// TODO: Implement select function (columns, table, conditions, force index - optional).
+// Query - Executes a query against Cloud Spanner.
+//
+// Params:
+//     statement string - The query to execute.
+//
+// Return:
+//     []*spanner.Row - A list of all rows returned by the query.
+//     error - An error if it occurred.
+func (m *MonkeyWrench) Query(statement string) ([]*spanner.Row, error) {
+	// Execute the query.
+	iter := m.Client.Single().Query(m.Context, spanner.NewStatement(statement))
 
-// TODO: Implement generic query function.
+	// Prepare slice to store the results from the query.
+	var results []*spanner.Row
+
+	defer iter.Stop()
+	for {
+		row, err := iter.Next()
+		if err == iterator.Done {
+			return results, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, row)
+	}
+}
+
+// TODO: Implement read function (columns, table, conditions).
+
+// TODO: Implement read with index function (columns, table, conditions, index).
+
+// TODO: Implement read to struct function.
 
 // applyGenericMutations - Apply a set of generic mutations.
 //
