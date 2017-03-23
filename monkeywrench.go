@@ -426,8 +426,7 @@ func (m *MonkeyWrench) ReadUsingIndex(table, index string, keys []spanner.Key, c
 //
 // Params:
 //     table string - Name of the table to read from.
-//     keys []spanner.Key - List of keys for the rows to read. Passing an empty
-//     slice will cause all rows to be returned.
+//     key spanner.Key - The key for the row to read.
 //     dst interface - Destination struct.
 //
 // Return:
