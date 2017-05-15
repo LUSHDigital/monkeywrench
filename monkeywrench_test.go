@@ -694,6 +694,50 @@ func ExampleMonkeyWrench_Query() {
 	}
 }
 
+// ExampleMonkeyWrench_Query_withParams - Example usage for the Query function with parameters.
+func ExampleMonkeyWrench_Query_withParams() {
+	ctx := context.Background()
+
+	// Create Cloud Spanner wrapper.
+	mW := &MonkeyWrench{
+		Context:  ctx,
+		Project:  "my-awesome-project",
+		Instance: "my-awesome-spanner-instance",
+		Db:       "my-awesome-spanner-database",
+	}
+
+	// Create a Spanner client.
+	if spannerErr := mW.CreateClient(); spannerErr != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create Spanner client. Reason - %+v\n", spannerErr)
+		os.Exit(1)
+	}
+
+	// Prepare the query.
+	query := `SELECT FirstName FROM Singers Where LastName = @surname`
+	params := map[string]interface{}{
+		"surname": "smith",
+	}
+
+	// Run the query.
+	results, err := mW.Query(query, params)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to query Spanner. Reason - %+v\n", err)
+		os.Exit(1)
+	}
+
+	// Print the results.
+	for _, result := range results {
+		var FirstName, LastName string
+
+		// Get each result.
+		result.ColumnByName("FirstName", &FirstName)
+		result.ColumnByName("LastName", &LastName)
+
+		// What did we get?
+		fmt.Printf("Found singer: %s %s\n", FirstName, LastName)
+	}
+}
+
 // ExampleMonkeyWrench_Read - Example usage for the Read function.
 func ExampleMonkeyWrench_Read() {
 	ctx := context.Background()

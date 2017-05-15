@@ -360,13 +360,24 @@ func (m *MonkeyWrench) DeleteKeyRange(table string, startKey, endKey spanner.Key
 //
 // Params:
 //     statement string - The query to execute.
+//     params ...map[string]interface{} - Parameters for the query (optional).
 //
 // Return:
 //     []*spanner.Row - A list of all rows returned by the query.
 //     error - An error if it occurred.
-func (m *MonkeyWrench) Query(statement string) ([]*spanner.Row, error) {
+func (m *MonkeyWrench) Query(statement string, params ...map[string]interface{}) ([]*spanner.Row, error) {
+	// Prepare the raw statement.
+	stmt := spanner.NewStatement(statement)
+
+	// Add any parameters we've been given.
+	for _, param := range params {
+		for key, value := range param {
+			stmt.Params[key] = value
+		}
+	}
+
 	// Execute the query.
-	iter := m.Client.Single().Query(m.Context, spanner.NewStatement(statement))
+	iter := m.Client.Single().Query(m.Context, stmt)
 	return getResultSlice(iter)
 }
 
