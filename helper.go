@@ -3,6 +3,7 @@ package monkeywrench
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"cloud.google.com/go/spanner"
 	"google.golang.org/api/iterator"
@@ -35,6 +36,12 @@ func GetColsFromStruct(src interface{}) ([]string, error) {
 	// Get the columns.
 	var cols []string
 	for i := 0; i < reflectStruct.NumField(); i++ {
+		// Skip this field if it is marked as ignored.
+		tag := string(reflectStruct.Field(i).Tag)
+		if strings.Contains(tag, "spanner:\"-\"") {
+			continue
+		}
+
 		cols = append(cols, reflectStruct.Field(i).Name)
 	}
 
