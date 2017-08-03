@@ -341,7 +341,7 @@ func (m *MonkeyWrench) DeleteMulti(table string, keys []spanner.Key) error {
 //     error - An error if it occurred.
 func (m *MonkeyWrench) DeleteKeyRange(table string, startKey, endKey spanner.Key, rangeKind spanner.KeyRangeKind) error {
 	// Create the mutation.
-	mutation := spanner.DeleteKeyRange(table, spanner.KeyRange{
+	mutation := spanner.Delete(table, spanner.KeyRange{
 		Start: startKey,
 		End:   endKey,
 		Kind:  rangeKind,
@@ -399,7 +399,7 @@ func (m *MonkeyWrench) Read(table string, keys []spanner.Key, columns []string) 
 
 	// If we have some specified keys, use those instead.
 	if len(keys) > 0 {
-		spannerKeys = spanner.Keys(keys...)
+		spannerKeys = spanner.KeySets(keys...)
 	}
 
 	// Execute the query.
@@ -425,7 +425,7 @@ func (m *MonkeyWrench) ReadUsingIndex(table, index string, keys []spanner.Key, c
 
 	// If we have some specified keys, use those instead.
 	if len(keys) > 0 {
-		spannerKeys = spanner.Keys(keys...)
+		spannerKeys = spanner.KeySets(keys...)
 	}
 
 	// Execute the query.
