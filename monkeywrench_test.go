@@ -64,8 +64,8 @@ func ExampleMonkeyWrench_InsertMulti() {
 	}
 
 	singers := [][]interface{}{
-		[]interface{}{2, "John", "Smith"},
-		[]interface{}{3, "Anne", "Other"},
+		{2, "John", "Smith"},
+		{3, "Anne", "Other"},
 	}
 
 	// Insert multiple rows.
@@ -131,8 +131,8 @@ func ExampleMonkeyWrench_InsertOrUpdateMulti() {
 	}
 
 	singers := [][]interface{}{
-		[]interface{}{2, "J", "Smith"},
-		[]interface{}{3, "A", "Other"},
+		{2, "J", "Smith"},
+		{3, "A", "Other"},
 	}
 
 	// Insert/update multiple rows.
@@ -198,8 +198,8 @@ func ExampleMonkeyWrench_UpdateMulti() {
 	}
 
 	singers := [][]interface{}{
-		[]interface{}{2, "J", "Smith"},
-		[]interface{}{3, "A", "Other"},
+		{2, "J", "Smith"},
+		{3, "A", "Other"},
 	}
 
 	// Update multiple rows.
@@ -253,8 +253,8 @@ func ExampleMonkeyWrench_InsertMapMulti() {
 	}
 
 	singers := []map[string]interface{}{
-		map[string]interface{}{"SingerId": 2, "FirstName": "John", "LastName": "Smith"},
-		map[string]interface{}{"SingerId": 3, "FirstName": "Anne", "LastName": "Other"},
+		{"SingerId": 2, "FirstName": "John", "LastName": "Smith"},
+		{"SingerId": 3, "FirstName": "Anne", "LastName": "Other"},
 	}
 
 	// Insert multiple rows.
@@ -308,8 +308,8 @@ func ExampleMonkeyWrench_InsertOrUpdateMapMulti() {
 	}
 
 	singers := []map[string]interface{}{
-		map[string]interface{}{"SingerId": 2, "FirstName": "J", "LastName": "Smith"},
-		map[string]interface{}{"SingerId": 3, "FirstName": "A", "LastName": "Other"},
+		{"SingerId": 2, "FirstName": "J", "LastName": "Smith"},
+		{"SingerId": 3, "FirstName": "A", "LastName": "Other"},
 	}
 
 	// Insert/update multiple rows.
@@ -363,8 +363,8 @@ func ExampleMonkeyWrench_UpdateMapMulti() {
 	}
 
 	singers := []map[string]interface{}{
-		map[string]interface{}{"SingerId": 2, "FirstName": "J", "LastName": "Smith"},
-		map[string]interface{}{"SingerId": 3, "FirstName": "A", "LastName": "Other"},
+		{"SingerId": 2, "FirstName": "J", "LastName": "Smith"},
+		{"SingerId": 3, "FirstName": "A", "LastName": "Other"},
 	}
 
 	// Update multiple rows.
@@ -432,8 +432,8 @@ func ExampleMonkeyWrench_InsertStructMulti() {
 	}
 
 	singers := []Singer{
-		Singer{SingerID: 2, FirstName: "John", LastName: "Smith"},
-		Singer{SingerID: 3, FirstName: "Anne", LastName: "Other"},
+		{SingerID: 2, FirstName: "John", LastName: "Smith"},
+		{SingerID: 3, FirstName: "Anne", LastName: "Other"},
 	}
 
 	// Insert multiple rows.
@@ -501,8 +501,8 @@ func ExampleMonkeyWrench_InsertOrUpdateStructMulti() {
 	}
 
 	singers := []Singer{
-		Singer{SingerID: 2, FirstName: "John", LastName: "Smith"},
-		Singer{SingerID: 3, FirstName: "Anne", LastName: "Other"},
+		{SingerID: 2, FirstName: "John", LastName: "Smith"},
+		{SingerID: 3, FirstName: "Anne", LastName: "Other"},
 	}
 
 	// Insert/update multiple rows.
@@ -570,8 +570,8 @@ func ExampleMonkeyWrench_UpdateStructMulti() {
 	}
 
 	singers := []Singer{
-		Singer{SingerID: 2, FirstName: "John", LastName: "Smith"},
-		Singer{SingerID: 3, FirstName: "Anne", LastName: "Other"},
+		{SingerID: 2, FirstName: "John", LastName: "Smith"},
+		{SingerID: 3, FirstName: "Anne", LastName: "Other"},
 	}
 
 	// Update multiple rows.
@@ -625,7 +625,7 @@ func ExampleMonkeyWrench_DeleteMulti() {
 	}
 
 	// Delete multiple rows.
-	if deleteErr := mW.DeleteMulti("Singers", []spanner.Key{spanner.Key{1}, spanner.Key{4}}); deleteErr != nil {
+	if deleteErr := mW.DeleteMulti("Singers", []spanner.Key{{1}, {4}}); deleteErr != nil {
 		fmt.Fprintf(os.Stderr, "Failed to delete from Spanner. Reason - %+v\n", deleteErr)
 		os.Exit(1)
 	}
@@ -757,7 +757,7 @@ func ExampleMonkeyWrench_Read() {
 	}
 
 	// Run the query for select keys.
-	results, err := mW.Read("Singers", []spanner.Key{spanner.Key{1}, spanner.Key{4}}, []string{"FirstName", "LastName"})
+	results, err := mW.Read("Singers", []spanner.KeySet{spanner.Key{1}, spanner.Key{4}}, []string{"FirstName", "LastName"})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to read Spanner. Reason - %+v\n", err)
 		os.Exit(1)
@@ -776,7 +776,7 @@ func ExampleMonkeyWrench_Read() {
 	}
 
 	// Get all the things!
-	allResults, err := mW.Read("Singers", []spanner.Key{}, []string{"FirstName", "LastName"})
+	allResults, err := mW.Read("Singers", []spanner.KeySet{}, []string{"FirstName", "LastName"})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to read Spanner. Reason - %+v\n", err)
 		os.Exit(1)
@@ -815,7 +815,7 @@ func ExampleMonkeyWrench_ReadUsingIndex() {
 
 	// Simple index
 	// Index DDL - `CREATE INDEX SingersByLastName ON Singers(LastName)`
-	results, err := mW.ReadUsingIndex("Singers", "SingersByLastName", []spanner.Key{}, []string{"LastName"})
+	results, err := mW.ReadUsingIndex("Singers", "SingersByLastName", []spanner.KeySet{}, []string{"LastName"})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to read Spanner using index. Reason - %+v\n", err)
 		os.Exit(1)
@@ -834,7 +834,7 @@ func ExampleMonkeyWrench_ReadUsingIndex() {
 
 	// Storing index
 	// Index DDL - `CREATE INDEX SingersByLastNameWithFirstName ON Singers(LastName) STORING (FirstName)`
-	storingResults, err := mW.ReadUsingIndex("Singers", "SingersByLastNameWithFirstName", []spanner.Key{}, []string{"FirstName", "LastName"})
+	storingResults, err := mW.ReadUsingIndex("Singers", "SingersByLastNameWithFirstName", []spanner.KeySet{}, []string{"FirstName", "LastName"})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to read Spanner using index. Reason - %+v\n", err)
 		os.Exit(1)
@@ -887,7 +887,7 @@ func ExampleMonkeyWrench_Read_multistruct() {
 	}
 
 	// Get all the things!
-	rows, err := mW.Read("Singers", []spanner.Key{}, structCols)
+	rows, err := mW.Read("Singers", []spanner.KeySet{}, structCols)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to read Spanner. Reason - %+v\n", err)
 		os.Exit(1)

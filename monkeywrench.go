@@ -386,14 +386,14 @@ func (m *MonkeyWrench) Query(statement string, params ...map[string]interface{})
 // Params:
 //     table string - Name of the table to read rows from.
 //     index string - Name of the index to use from the table.
-//     keys []spanner.Key - Slice of keys for the rows to read. Passing an empty
+//     keys []spanner.KeySet - Slice of keys for the rows to read. Passing an empty
 //     slice will cause all rows to be returned.
 //     columns []string - List of columns to read for each row.
 //
 // Return:
 //     []*spanner.Row - A list of all rows returned by the query.
 //     error - An error if it occurred.
-func (m *MonkeyWrench) Read(table string, keys []spanner.Key, columns []string) ([]*spanner.Row, error) {
+func (m *MonkeyWrench) Read(table string, keys []spanner.KeySet, columns []string) ([]*spanner.Row, error) {
 	// Default to all keys.
 	var spannerKeys = spanner.AllKeys()
 
@@ -412,14 +412,14 @@ func (m *MonkeyWrench) Read(table string, keys []spanner.Key, columns []string) 
 // Params:
 //     table string - Name of the table to read rows from.
 //     index string - Name of the index to use from the table.
-//     keys []spanner.Key - List of keys for the rows to read. Passing an empty
+//     keys []spanner.KeySet - List of keys for the rows to read. Passing an empty
 //     slice will cause all rows to be returned.
 //     columns []string - List of columns to read for each row.
 //
 // Return:
 //     []*spanner.Row - A list of all rows returned by the query.
 //     error - An error if it occurred.
-func (m *MonkeyWrench) ReadUsingIndex(table, index string, keys []spanner.Key, columns []string) ([]*spanner.Row, error) {
+func (m *MonkeyWrench) ReadUsingIndex(table, index string, keys []spanner.KeySet, columns []string) ([]*spanner.Row, error) {
 	// Default to all keys.
 	var spannerKeys = spanner.AllKeys()
 
@@ -459,7 +459,7 @@ func (m *MonkeyWrench) ReadToStruct(table string, key spanner.Key, dst interface
 	}
 
 	// Perform the read.
-	rows, err := m.Read(table, []spanner.Key{key}, cols)
+	rows, err := m.Read(table, []spanner.KeySet{key}, cols)
 	if err != nil {
 		return err
 	}
