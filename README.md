@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/LUSHDigital/monkeywrench)](https://goreportcard.com/report/github.com/LUSHDigital/monkeywrench)
+
 # Monkey Wrench
 A Golang library for interfacing with Google Cloud Spanner.
 
