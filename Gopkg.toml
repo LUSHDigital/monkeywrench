@@ -23,7 +23,7 @@
 
 [[constraint]]
   name = "cloud.google.com/go"
-  version = "0.14.0"
+  version = "0.17.0"
 
 [[constraint]]
   branch = "master"
@@ -35,4 +35,4 @@
 
 [[constraint]]
   name = "google.golang.org/grpc"
-  version = "1.6.0"
+  version = "1.8.2"
