@@ -34,12 +34,14 @@ type MonkeyWrench struct {
 //
 // Return:
 //     error - An error if it occurred.
-func (m *MonkeyWrench) CreateClient() error {
+func (m *MonkeyWrench) CreateClient(sessionPoolConfig spanner.SessionPoolConfig) error {
 	// Build the fully qualified db name.
 	fqDb := fmt.Sprintf(FqDbPattern, m.Project, m.Instance, m.Db)
 
 	// Create the client.
-	spannerClient, err := spanner.NewClient(m.Context, fqDb, m.Opts...)
+	spannerClient, err := spanner.NewClientWithConfig(m.Context, fqDb, spanner.ClientConfig{
+		SessionPoolConfig: sessionPoolConfig,
+	}, m.Opts...)
 	if err != nil {
 		return err
 	}
