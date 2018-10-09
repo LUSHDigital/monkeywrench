@@ -357,15 +357,12 @@ func (m *MonkeyWrench) DeleteKeyRange(table string, startKey, endKey spanner.Key
 }
 
 // Query - Executes a query against Cloud Spanner.
-//
-// Params:
-//     statement string - The query to execute.
-//     params ...map[string]interface{} - Parameters for the query (optional).
-//
-// Return:
-//     []*spanner.Row - A list of all rows returned by the query.
-//     error - An error if it occurred.
 func (m *MonkeyWrench) Query(statement string, params ...map[string]interface{}) ([]*spanner.Row, error) {
+	return m.QueryCtx(m.Context, statement, params...)
+}
+
+// QueryCtx is the same as Query but allows passing your own cancellable context
+func (m *MonkeyWrench) QueryCtx(ctx context.Context, statement string, params ...map[string]interface{}) ([]*spanner.Row, error) {
 	// Prepare the raw statement.
 	stmt := spanner.NewStatement(statement)
 
@@ -377,7 +374,7 @@ func (m *MonkeyWrench) Query(statement string, params ...map[string]interface{})
 	}
 
 	// Execute the query.
-	iter := m.Client.Single().Query(m.Context, stmt)
+	iter := m.Client.Single().Query(ctx, stmt)
 	return getResultSlice(iter)
 }
 
@@ -526,7 +523,7 @@ func (m *MonkeyWrench) applyMapMutations(table string, sourceData []map[string]i
 	// Get the values from the passed source data.
 	vals := reflect.ValueOf(sourceData)
 
-	// Check the type of data we were passed is vald.
+	// Check the type of data we were passed is valid.
 	dataKind := vals.Type().Kind()
 	if dataKind != reflect.Slice && dataKind != reflect.Array {
 		return fmt.Errorf("Unsupported type: %s", dataKind.String())
